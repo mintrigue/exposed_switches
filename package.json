@@ -1,5 +1,8 @@
 {
   "name": "MakerArtPrize",
   "version": "0.0.1",
-  "description": "WebApp for GR Makers ArtPrize 2014"
+  "description": "WebApp for GR Makers ArtPrize 2014",
+  "dependencies": {
+    "socket.io": "^1.1.0"
+  }
 }
