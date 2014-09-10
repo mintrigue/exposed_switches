@@ -4,13 +4,10 @@
 		"secret" : "SET_IN_ENV"
 	},
 
-	//REDIS
 	"redis": {
 		"host" : "pub-redis-10626.us-east-1-2.1.ec2.garantiadata.com",
 		"port" : "10626",
 		"password" : "qzDj6vsKgFdasoY8",
 		"prefix" : "p_"
-	},
-
-	//redis://rediscloud:qzDj6vsKgFdasoY8@pub-redis-10626.us-east-1-2.1.ec2.garantiadata.com:10626
+	}
 }
