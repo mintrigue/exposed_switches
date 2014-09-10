@@ -19,9 +19,9 @@ if(typeof pw == "string" && pw.length > 0)
 	options.auth_pass = pw;
 
 
-
+console.log(config.get("redis:port"),config.get("redis:host"),config.get("redis:password"));
 exports.client = client = redis.createClient(config.get("redis:port"),config.get("redis:host"), options);
-client.auth(config.get("redis:password"));
+//client.auth(config.get("redis:password"));
 exports.prefix = prefix = config.get("redis:prefix")+":";
 
 
