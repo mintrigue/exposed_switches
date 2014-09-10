@@ -1,0 +1,140 @@
+---
+- hosts: all 
+  sudo: True
+  vars:
+    repo_basedir: .
+
+    node_version: "0.10.31"
+    node_prefix: "node-v${node_version}"
+    node_tarball: "${node_prefix}.tar.gz"
+    node_path: "/usr/local"
+
+    redis_version: 2.8.14
+
+
+  tasks:
+
+  - name: ensure make is installed 
+    action: apt pkg=make state=present update_cache=yes
+  - name: ensure g++ is installed 
+    action: apt pkg=g++ state=present
+  - name: ensure nginx is installed 
+    action: apt pkg=nginx state=present
+  - name: ensure nginx is running
+    action: service name=nginx state=started
+  - include: $repo_basedir/nodejs/tasks/setup.yml  
+
+  #for dev server
+  - name: Install "nodemon" node.js package.
+    npm: name=nodemon global=yes
+
+  #for dev server
+  - name: Install "express" node.js package.
+    npm: name=express global=yes
+
+  #for testing
+  - name: Install "mocha" node.js package.
+    npm: name=mocha global=yes
+
+  #Heroku Toolbelt
+  - name: Install Heroku Toolbelt
+    shell: wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+         creates=/usr/local/heroku
+
+  # Redis server.
+  - name: Download Redis
+    get_url: url=http://download.redis.io/releases/redis-{{redis_version}}.tar.gz dest=/tmp
+
+  - name: Untar Redis
+    command: chdir=/tmp creates=redis-{{redis_version}} tar -xzf redis-{{redis_version}}.tar.gz
+
+  - name: Install Redis
+    command: creates=/usr/local/bin/redis-server chdir=/tmp/redis-{{redis_version}} make install
+
+  - name: Create user redis
+    user: name=redis system=yes home=/var/lib/redis shell=/bin/false
+
+  - name: Configure Upstart for Redis
+    copy: src=files/upstart_redis.conf dest=/etc/init/redis.conf
+    notify: Restart Redis
+
+  - name: Start Redis
+    service: name=redis state=started
+
+  handlers:
+    - name: Restart Redis
+      service: name=redis state=restarted
+
+
+  #Postgresql
+  ###########
+
+- hosts: all
+  sudo: True
+
+  tasks: 
+    - name: install python-pycurl
+      apt: pkg=python-pycurl state=latest
+
+
+    - name: Add postgres repository
+      apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main' state=present
+
+    - name: update apt if needed
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: Add postgres repository key
+      apt_key: url=http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc state=present
+
+    - name: Install postgresql
+      apt: pkg=postgresql-9.3 state=present force=yes
+
+    - name: ensure postgres extras are installed
+      action: apt name={{item}}
+      with_items:        
+        - libpq-dev
+        - python-psycopg2
+        - postgresql-contrib-9.3
+
+- hosts: all 
+  sudo: True
+  sudo_user: postgres
+  vars:
+    dbnames: ["artprize",]
+    dbuser: apuser
+    dbpassword: pass
+
+  tasks:
+
+    - name: ensure database is created
+      postgresql_db: name={{item}}
+                     encoding='UTF8'
+                     lc_collate='en_US.UTF-8'
+                     lc_ctype='en_US.UTF-8'
+                     template='template0'
+      with_items: $dbnames
+
+    - name: ensure user has access to database
+      postgresql_user: db={{item}} name={{dbuser}} password={{dbpassword}} priv=ALL
+      with_items: $dbnames
+
+    - name: ensure user does not have unnecessary privilege
+      postgresql_user: name={{dbuser}} role_attr_flags=NOSUPERUSER,NOCREATEDB
+
+    - name: create extension uuid-ossp on postgis_template
+      action: command psql -d {{item}} -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'      
+      with_items: $dbnames
+
+    - name: update postgres db configuration
+      action: copy src=files/postgresql.conf dest=/etc/postgresql/9.3/main/postgresql.conf
+      notify:
+        - restart postgresql
+
+    - name: update postgres client configuration
+      action: copy src=files/pg_hba.conf dest=/etc/postgresql/9.3/main/pg_hba.conf
+      notify:
+        - restart postgresql
+
+  handlers:
+    - name: restart postgresql
+      action: service name=postgresql state=restarted

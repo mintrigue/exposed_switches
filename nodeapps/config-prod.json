@@ -1,0 +1,6 @@
+{
+	"aws":{
+		"key"    : "SET_IN_ENV",
+		"secret" : "SET_IN_ENV"
+	}
+}
