@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "description": "WebApp for GR Makers ArtPrize 2014",
   "dependencies": {
+    "hiredis": "^0.1.17",
+    "redis": "^0.12.1",
     "socket.io": "^1.1.0"
   }
 }
