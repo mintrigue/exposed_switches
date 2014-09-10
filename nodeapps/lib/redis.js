@@ -42,7 +42,6 @@ exports.getLock = function(name, seconds, callback){
 }
 
 exports.nrpClient = function(){
-	return;
 	if(nrp == null){
 		var cfg = { port: config.get("redis:port")       // Port of your remote Redis server
              , host: config.get("redis:host") // Redis server host, defaults to 127.0.0.1

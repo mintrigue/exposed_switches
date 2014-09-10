@@ -86,10 +86,12 @@ Subscribe
 */
  // subscribe
 var nrp = redis.nrpClient();
+/*
 nrp.on('count_msg', function (data) {
   console.log("UPDATED");
    io.emit('count', data.count);
 });
+*/
 
 /****
 End subscribe
@@ -97,7 +99,7 @@ End subscribe
 
 function sendCountUpdate(count, action){
   console.log("UPDATING");
-  nrp.emit('count_msg', { count:count, action:action});
+//  nrp.emit('count_msg', { count:count, action:action});
 }
 
 http.listen(3000, function(){
