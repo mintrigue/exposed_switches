@@ -13,7 +13,7 @@ var config = require("../config")
 ;
 
 //Set options
-var options = {};
+var options = {no_ready_check: true};
 var pw = config.get("redis:password");
 if(typeof pw == "string" && pw.length > 0)
 	options.auth_pass = pw;
