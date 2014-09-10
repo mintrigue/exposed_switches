@@ -45,7 +45,7 @@ exports.nrpClient = function(){
 	if(nrp == null){
 		var cfg = { port: config.get("redis:port")       // Port of your remote Redis server
              , host: config.get("redis:host") // Redis server host, defaults to 127.0.0.1
-             , password: config.get("redis:password") // Password 
+             , auth: config.get("redis:password") // Password 
              , scope: process.env.NODE_ENV    // Use a scope to prevent two NRPs from sharing messages
              };
         nrp = new NRP(cfg);
