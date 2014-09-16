@@ -73,6 +73,7 @@ PlayPage.prototype.init = function(){
 
     	$('#playFrame').addClass("hidden");
     	$('#resultFrame').removeClass("hidden");
+    	$("#voteBtn").addClass("hidden");
     });
 }
 

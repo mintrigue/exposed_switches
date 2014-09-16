@@ -34,7 +34,7 @@ function resetGame(){
         ["del", "main_count"],
         ["del", "leaderboard"],
         ["set", "game_state", "running-"+d.getTime()],
-        ["incr", "game_num"]
+        ["incr", "game_num"],
     ]).exec(function (err, results) {
       	if (err){
           	console.error("ERROR reset game Redis multi:" + err);
@@ -367,7 +367,7 @@ function targetReachedHandler(params){
 	          "true",
 	          "NX",		//Only set if it's not set
 	          "EX",	//Expire
-	          "15", //seconds
+	          "5", //seconds
 	          function(err, result){
 	            if(err)
 	                return done("Could not set flag to handle end of game:" + err, null);
@@ -402,7 +402,7 @@ function targetReachedHandler(params){
 				return done(null, data);
 
 			 redis.client.multi([
-			  	["zrange", "leaderboard", "0", "9", "WITHSCORES"],
+			  	["zrange", "leaderboard", "0", "3", "WITHSCORES"],
 		        ["rename", "leaderboard", "last_leaderboard"],
 
 			    ]).exec(function (err, results) {

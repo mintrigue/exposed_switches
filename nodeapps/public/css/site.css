@@ -36,7 +36,7 @@ html,body{
 	padding:3px;
 }
 
-a.voteBtn{
+a#voteBtn{
 	float:right;
 	color:#4f9940;
 	text-decoration: none;
@@ -83,6 +83,8 @@ a.openLink{
 .count{
 	margin-top:0px;
 	text-align: center;
+	margin-bottom: -10px;
+	font-size: 30px;
 }
 
 .leader{
@@ -128,4 +130,16 @@ a.openLink{
 
 .resultText.right{
 	text-align: right;
+}
+
+.buttonContainer{
+	text-align: center;
+	position:absolute;
+	bottom:40px;
+	width:100%;
+}
+a.midButton{
+	color:#4f9940;
+	text-decoration: none;
+	font-size:26px;
 }

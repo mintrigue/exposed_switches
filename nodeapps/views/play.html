@@ -4,16 +4,16 @@
 		<div id="playFrame">
 			<div class="info"><span class="highlight">{{ moniker }}</span> for <span class="highlight">{{ chosen_open }}</span></div>
 
-			<div class="info center section close">lighting</div>
-			<div class="count">powered <span class="highlight" id="doneCount">{{ done }}</span> of <span class="highlight" id="totalCount">{{ total }}</span></div>
+			<div class="info center section close">everyone</div>
+			<div class="count">powered up <span class="highlight" id="doneCount">{{ done }}</span> of <span class="highlight" id="totalCount">{{ total }}</span></div>
 
 
 			<div class="middleContainer">
 
 				<div class="stats">
-					<div class="info close">score</div>
+					<div class="info close">you powered</div>
 					<div id="score">{{ score }}</div>
-					<div class="info section close">rank</div>
+					<div class="info section close">your rank</div>
 					<span id="rank">{{rank}}</span> of <span id="player_count">{{player_count}}</span>
 				</div>
 
@@ -29,7 +29,7 @@
 			</div>
 			<div class="clear">&nbsp;</div>
 
-			<div class="info action center">power the lights on</div>
+			<div class="info action center">power up exposed</div>
 
 			<div class="switches">
 			 	<img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png">
@@ -50,6 +50,13 @@
 
 			<table id="leaderboard2">
 			</table>
+
+			<div class="buttonContainer">
+				<a class="midButton" href="http://www.artprize.org/grmakers/2014/exposed">VOTE 56620</a>
+				<br><br>
+				<a class="midButton" href="/">PLAY AGAIN</a>
+			</div>
+
 		</div>
 
 {% endblock %}
