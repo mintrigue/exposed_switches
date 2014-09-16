@@ -1,0 +1,21 @@
+<html>
+<head>
+	<title>Exposed</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="/css/site.css">
+</head>
+<body>
+	<div id="container">
+		{% block content%}{% endblock %}
+
+		<div id="footer">EXPOSED <a class="voteBtn" href="http://www.artprize.org/grmakers/2014/exposed">VOTE 56620</a></div>
+	</div>
+
+	 <script src="/socket.io/socket.io.js"></script>
+	 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	 <script src="/js/site.js"></script>
+
+	 {% block scripts %}
+	 {% endblock %}
+</body>
+</html>

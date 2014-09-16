@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+		<div class="info">your leaderboard name is</div>
+		<div class="mainText">{{ moniker }}</div>
+
+
+		<div class="info section right">open exposed via</div>
+
+		{% for os in openSequences %}
+			<a href="/play/{{os}}" class="openLink">{{os}}</a>
+			<!--https://www.youtube.com/watch?v=BEtIoGQxqQs-->
+		{% endfor %}
+		
+			<a href="/play/rolling" class="openLink">RA!</a>
+			<!--https://www.youtube.com/watch?v=dQw4w9WgXcQ-->
+
+			<a href="/play/rolling" class="openLink">MOONWALK</a>
+			<!-- https://www.youtube.com/watch?v=gE1ZvCnwkYk -->
+
+			<a href="/play/ouch" class="openLink">OUCH</a>
+			<!-- https://www.youtube.com/watch?v=dE-nfzcUiPk -->
+{% endblock %}

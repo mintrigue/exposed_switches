@@ -1,0 +1,14 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+     "control_center_site/public/*",
+     "classifier_site/public/*",
+     "newrelic_agent.log"
+  ],
+  "verbose": true,
+  "env": {
+    "NODE_ENV": "dev"
+  },
+  "ext": "js"
+}

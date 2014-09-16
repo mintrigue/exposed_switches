@@ -9,5 +9,12 @@
 		"port" : "10626",
 		"password" : "qzDj6vsKgFdasoY8",
 		"prefix" : "p_"
-	}
+	},
+
+	//SESSION AND COOKIE INFO
+	"cookie_secret_key" : "NOT_SET",
+	"session_secret_key": "NOT_SET",
+	"session_cookie_prefix" : "NOT_SET",
+	"session_cookie_domain" : null,
+
 }

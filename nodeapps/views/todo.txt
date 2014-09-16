@@ -1,0 +1,21 @@
+Landing Page
+
+	Exposed - Vote
+	User Handle
+	Animation Types
+
+
+Action Page
+	Exposed - Vote
+	Status Image
+	Leaderboard
+	Stats - Animation
+	Buttons
+
+Done Page
+	Exposed
+	Winning Animation
+	Vote
+	Stats
+	Leader board
+	Restart

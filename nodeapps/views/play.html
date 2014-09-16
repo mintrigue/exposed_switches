@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+		<div id="playFrame">
+			<div class="info"><span class="highlight">{{ moniker }}</span> for <span class="highlight">{{ chosen_open }}</span></div>
+
+			<div class="info center section close">lighting</div>
+			<div class="count">powered <span class="highlight" id="doneCount">{{ done }}</span> of <span class="highlight" id="totalCount">{{ total }}</span></div>
+
+
+			<div class="middleContainer">
+
+				<div class="stats">
+					<div class="info close">score</div>
+					<div id="score">{{ score }}</div>
+					<div class="info section close">rank</div>
+					<span id="rank">{{rank}}</span> of <span id="player_count">{{player_count}}</span>
+				</div>
+
+				<div class="info section close right">leaderboard</div>
+				<table id="leaderboard">
+					{% for leader in leaderboard %}
+					<tr>
+						<td>{{leader.name}}</td>
+						<td>{{leader.score}}</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
+			<div class="clear">&nbsp;</div>
+
+			<div class="info action center">power the lights on</div>
+
+			<div class="switches">
+			 	<img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png">
+
+			 	<img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png"><img class="switch" src="/images/switch_off.png">
+			</div>
+		</div>
+		<div id="resultFrame" class="hidden">
+			<h1>GREAT WORK!</h1>
+
+			<div class="resultText right">EXPOSED is opening</div>
+			<div class="resultText right">via <span id="open_type"></span></div>
+			<div class="resultText right">chosen by <span id="winner"></span></div>
+
+			<div class="info">
+			leaderboard
+			</div>
+
+			<table id="leaderboard2">
+			</table>
+		</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+$( document ).ready(function() {
+	var page = new PlayPage();
+	page.init();
+   //initPlayPage();
+});
+</script>
+{% endblock %}

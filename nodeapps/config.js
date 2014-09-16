@@ -30,7 +30,12 @@ nconf.defaults(
 	"aws":{
 		"key"    : "NOT_SET",
 		"secret" : "NOT_SET"
-	}
+	},
+
+	"cookie_secret_key" : "ENV_VAR",
+	"session_secret_key": "ENV_VAR",
+	"session_cookie_prefix" : "UNSET",
+	"session_cookie_domain" : null
 
 });
 
