@@ -1,7 +1,6 @@
 var express = require('express')
   app = express(),
-  http = require('http').Server(app),
-  io = require('socket.io')(http),
+  http = require('http').createServer(app),
   redis = require("./lib/redis"),
   swig = require('swig'),
   moniker = require('moniker'),
@@ -36,7 +35,6 @@ app.use(session({secret: config.get("cookie_secret_key")
               , cookie : config.get("session_cookie_domain") == null  ? {} : {domain:config.get("session_cookie_domain")} 
                             , store: sessionStoreInstance
 }));
-
 
 
 
@@ -131,6 +129,7 @@ function sendCountUpdate(count, action){
   nrp.emit('count_msg', { count:count, action:action});
 }
 */
+
 http.listen(process.env.PORT || 3000, function(){
   console.log('listening on *:3000');
 });
