@@ -11,10 +11,9 @@
 		"prefix" : "p_"
 	},
 
-	//SESSION AND COOKIE INFO
-	"cookie_secret_key" : "NOT_SET",
-	"session_secret_key": "NOT_SET",
-	"session_cookie_prefix" : "NOT_SET",
-	"session_cookie_domain" : null,
+	"cookie_secret_key" : "ENV_VAR",
+	"session_secret_key": "ENV_VAR",
+	"session_cookie_prefix" : "",
+	"session_cookie_domain" : ".compology.us"
 
 }
