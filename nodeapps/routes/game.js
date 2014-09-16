@@ -11,7 +11,7 @@ var moniker = require('moniker'),
 ;
 
 
-var total = 3;
+var total = config.getInt("target_count", 25);
 var openSequences = ["NINJAS", "RA!", "MOONWALK", "OUCH"];
 
 init_game();

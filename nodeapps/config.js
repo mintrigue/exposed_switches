@@ -35,8 +35,9 @@ nconf.defaults(
 	"cookie_secret_key" : "ENV_VAR",
 	"session_secret_key": "ENV_VAR",
 	"session_cookie_prefix" : "UNSET",
-	"session_cookie_domain" : null
+	"session_cookie_domain" : null,
 
+	"target_count": 25
 });
 
 nconf.getInt = function(key, _default){

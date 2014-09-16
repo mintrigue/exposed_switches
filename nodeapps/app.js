@@ -17,7 +17,6 @@ var express = require('express')
 //AWS.config.update({region: 'us-east-1'});
 //var sns = new AWS.SNS();
 
-var total = 5;
 
 app.engine('html', swig.renderFile);
 if(process.env.NODE_ENV == "dev" || process.env.NODE_ENV == "test"){
