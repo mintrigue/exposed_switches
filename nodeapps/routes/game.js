@@ -57,7 +57,7 @@ exports.play = function(req, res){
 	req.session.open_type = req.params.open_type;
 
     redis.client.multi([
-    	["set", "open_type:" +req.session.handle, req.session.open_type],
+    	["set", "open_type:" +req.session.handle, req.params.open_type],
         ["get", "main_count"],
         ["zscore", "leaderboard", req.session.handle],
         ["zrevrank", "leaderboard", req.session.handle],
@@ -431,10 +431,10 @@ function targetReachedHandler(params){
 
 		//STEP 4: Get winner's open type
 		function(data, done){
-			console.log("STEP 4");
+
 			if(!data.canProcessEndGame)
 				return done(null, data);
-			console.log(data.winner_handle);
+
 			redis.client.get("open_type:" +data.winner_handle, function(err, result){
 				if (err){
 		          	console.log("could not get winner's open type:" + err);
@@ -452,7 +452,6 @@ function targetReachedHandler(params){
 
 		//STEP 5: Record winner, open type, score
 		function(data, done){
-			console.log("STEP 5");
 			if(!data.canProcessEndGame)
 				return done(null, data);
 
@@ -468,13 +467,13 @@ function targetReachedHandler(params){
 
 		//STEP 6: Record
 		function(data, done){
-			console.log("STEP 6");
+
 			if(!data.canProcessEndGame){
 				console.dir(data);
 				return done(null, data);
 			}
 
-			console.log("GAME OVER");
+
 			io.emit("game_over", {leaderboard:data.leaderboard,
 									winner_opentype:data.winner_opentype,
 									winner_handle:data.winner_handle,
@@ -497,7 +496,7 @@ function targetReachedHandler(params){
 	});
 }
 function sendCountUpdate(count, action){
-  console.log("UPDATING");
+  
   if(action == "incr" && parseInt(count) >= total)
   	endOfGameReached();
 
