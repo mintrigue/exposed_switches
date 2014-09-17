@@ -58,6 +58,11 @@ app.get('/reset', function(req, res){
       res.send("reset");
   });
 });
+
+
+app.get('/billboard', function(req, res){
+  res.render('billboard.html');
+});
 /*
 io.on('connection', function(socket){
   console.log('a user connected');

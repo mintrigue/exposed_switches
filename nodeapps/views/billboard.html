@@ -1,67 +1,37 @@
-<!doctype html>
 <html>
-  <head>
-    <title>Socket.IO chat</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-
-      img.switch{
-        width:25%;
-      }
-    </style>
-  </head>
-  <body>
-    Turn On Exposed
-    <br/>
-    <div id="count">
-    A lot togo
+<head>
+  <title>Exposed</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="/css/site.css">
+</head>
+<body>
+  <div class="billboard">
+    <h1>EXPOSED</h1>
+    <h1>http://bit.ly/1t6PFl9</h1>
+    Work together to open the spiral!
+    <p>
+    <div class="todoList">
+    1) Go to http://bit.ly/1t6PFl9<br>
+    2) Choose an open sequence animation<br>
+    3) Flip the switches to power up Exposed<br>
+    4) Most flips get's to see their animation open exposed.<br>
     </div>
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-<br>
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-<br>
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-<br>
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
-    <img class="switch" src="/images/switch_off.png">
+    <div id="animationTitle"></div>
+    <div id="player"></div>
+  </div>
 
+   <script src="/socket.io/socket.io.js"></script>
+   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+   <script src="/js/site.js"></script>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-    var socket = io();
-    $('.switch').click(function(){
-      if($(this).hasClass("on")){
-        $(this).removeClass("on");
-        $(this).attr("src", "/images/switch_off.png");
-        socket.emit('action', 'clicked_off');
-      } else {
-        $(this).addClass("on");
-        $(this).attr("src", "/images/switch_on.png");
-        socket.emit('action', 'clicked_on');
-      }
-    });
-    socket.on('count', function(msg){
-      $('#count').html(msg);
-    });
-    </script>
-  </body>
+{% block scripts %}
+<script>
+$( document ).ready(function() {
+  var page = new BillboardPage();
+  page.init();
+   //initPlayPage();
+});
+</script>
+{% endblock %}
+</body>
 </html>

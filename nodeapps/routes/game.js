@@ -174,7 +174,7 @@ exports.initSockets = function(http, sessionStore, cookieParser, sessionStoreKey
 	  	//					todo:total-result,
 	  	//					done:result});
 	  	});
-	}, 3500);
+	}, 2000);
 };
 
 function userConnectedHandler(err, sessionSock, socket, session){
@@ -234,7 +234,7 @@ function userConnectedHandler(err, sessionSock, socket, session){
 	      		socket.emit("rank_update", rankData);
 	      	}
 	  	});
-	}, 3500);
+	}, 2000);
 };
 
 
@@ -402,7 +402,7 @@ function targetReachedHandler(params){
 				return done(null, data);
 
 			 redis.client.multi([
-			  	["zrange", "leaderboard", "0", "3", "WITHSCORES"],
+			  	["zrevrange", "leaderboard", "0", "3", "WITHSCORES"],
 		        ["rename", "leaderboard", "last_leaderboard"],
 
 			    ]).exec(function (err, results) {
@@ -483,6 +483,27 @@ function targetReachedHandler(params){
 		},
 
 		//STEP 7: Call device if redis block is not present
+		function(data, done){
+			if(!data.canProcessEndGame)
+				return done(null, data);
+
+			redis.client.set(
+	          "device_sent_message",
+	          "true",
+	          "NX",		//Only set if it's not set
+	          "EX",	//Expire
+	          "1", //seconds
+	          function(err, result){
+	            if(err)
+	                console.log("could not talk with device");
+
+	            if(result != null)
+	            	io.emit("open_spiral", {open_type:data.winner_opentype});
+
+	            done(null, data);
+	          }
+	        );
+		},
 
 		//STEP 8: Reset Game
 		function(data, done){

@@ -143,3 +143,28 @@ a.midButton{
 	text-decoration: none;
 	font-size:26px;
 }
+
+.topspace{
+	margin-top: 5px;
+}
+
+.billboard{
+	padding-top:10px;
+	width:650px;
+	height:100%;
+	background-color: white;
+	margin-left:auto;
+	margin-right: auto;
+	text-align: center;
+}
+.todoList{
+	margin-left:auto;
+	margin-right: auto;
+	text-align: left;
+	width:65%;
+}
+
+.player{
+	margin-left: 5px;
+	width:640px;
+}

@@ -14,6 +14,7 @@
 	"cookie_secret_key" : "ENV_VAR",
 	"session_secret_key": "ENV_VAR",
 	"session_cookie_prefix" : "",
-	"session_cookie_domain" : "artprize.herokuapp.com"
+	"session_cookie_domain" : "artprize.herokuapp.com",
 
+	"target_count": 500
 }
