@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.network :forwarded_port,
                guest: 22,
-                host: 2203,
+                host: 2204,
                   id: "ssh",
   auto_correct: true
   #website

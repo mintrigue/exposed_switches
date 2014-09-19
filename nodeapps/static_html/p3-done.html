@@ -1,0 +1,70 @@
+
+<html>
+<head>
+	<title>Exposed</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="site.css">
+</head>
+<body>
+	<div id="container">
+
+		<div id="resultFrame">
+			<h1>GREAT WORK!</h1>
+
+			<div class="resultText right">EXPOSED is opening</div>
+			<div class="resultText right">via <span id="open_type">NINJAS</span></div>
+			<div class="resultText right">chosen by <span id="winner">Secret Weight</span></div>
+
+			<div class="info">your rank</div>
+			<span id="rank2">1</span> of <span id="player_count2">1</span>
+
+			<br>
+			<div class="info topspace">
+			leaderboard
+			</div>
+
+			<table id="leaderboard2">
+				<tr>
+						<td>Secret Weight</td>
+						<td>125</td>
+					</tr>
+
+					<tr>
+						<td>Plausible Dust</td>
+						<td>89</td>
+					</tr>
+
+					<tr>
+						<td>Faulty Fan</td>
+						<td>31</td>
+					</tr>
+			</table>
+
+			<div class="buttonContainer">
+				<a class="midButton" href="http://www.artprize.org/grmakers/2014/exposed">VOTE 56620</a>
+				<br><br>
+				<a class="midButton" href="/">PLAY AGAIN</a>
+			</div>
+
+		</div>
+
+
+
+		<div id="footer">EXPOSED </div>
+	</div>
+
+	 <script src="/socket.io/socket.io.js"></script>
+	 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	 <script src="site.js"></script>
+
+	 
+<script>
+$( document ).ready(function() {
+	var page = new PlayPage();
+	page.init();
+   //initPlayPage();
+});
+</script>
+
+</body>
+</html>
