@@ -18,7 +18,7 @@ function PlayPage(){
 
 PlayPage.prototype.init = function(){
 	var self = this;
-	self.socket = io();
+	//self.socket = io();
 	var clickEventType = ((document.ontouchstart!==null)?'click':'touchstart');
     $('.switch').bind(clickEventType, function(){
 
@@ -26,16 +26,16 @@ PlayPage.prototype.init = function(){
     		return;
 	    if($(this).hasClass("on")){
 	        $(this).removeClass("on");
-	        $(this).attr("src", "../images/switch_off.png");
-	        self.socket.emit('action', 'clicked_off');
+	        $(this).attr("src", "../public/images/switch_off.png");
+	      //  self.socket.emit('action', 'clicked_off');
 	    } else {
 	        $(this).addClass("on");
-	        $(this).attr("src", "../images/switch_on.png");
+	        $(this).attr("src", "../public/images/switch_on.png");
 	        self.resetIfNeeded();
-	        self.socket.emit('action', 'clicked_on');
+	       // self.socket.emit('action', 'clicked_on');
 	    }
     });
-
+/*
     self.socket.on('count', function(msg){
     	$('#doneCount').html(msg.count);
     	$('#totalCount').html(msg.total);
@@ -81,6 +81,7 @@ PlayPage.prototype.init = function(){
     	$('#resultFrame').removeClass("hidden");
     	$("#voteBtn").addClass("hidden");
     });
+    */
 }
 
 PlayPage.prototype.resetIfNeeded = function(){
