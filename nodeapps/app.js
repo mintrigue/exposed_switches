@@ -63,6 +63,10 @@ app.get('/reset', function(req, res){
 app.get('/billboard', function(req, res){
   res.render('billboard.html');
 });
+
+app.get('/raspi', function(req, res){
+  res.render('raspi.html');
+});
 /*
 io.on('connection', function(socket){
   console.log('a user connected');

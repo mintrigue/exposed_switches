@@ -18,7 +18,7 @@ function PlayPage(){
 
 PlayPage.prototype.init = function(){
 	var self = this;
-	self.socket = io();
+	self.socket = io('/web');
 	var clickEventType = ((document.ontouchstart!==null)?'click':'touchstart');
     $('.switch').bind(clickEventType, function(){
 
@@ -105,7 +105,7 @@ function BillboardPage(){
 
 BillboardPage.prototype.init = function(){
     var self = this;
-    self.socket = io();
+    self.socket = io('/web');
 
     self.socket.on('open_spiral', function(msg){
         $('#animationTitle').html(msg.open_type);
@@ -172,4 +172,29 @@ var ytCallback = null;
 function onYouTubeIframeAPIReady() {
     ytCallback();
 }
+
+function RaspiPage(){
+    this.socket = null;
+};
+
+RaspiPage.prototype.init = function(){
+    var self = this;
+    self.socket = io('/raspi');
+
+    self.socket.on('power', function(msg){
+        $("#currentLevel").html(msg.level);
+        $("#totalLevel").html(msg.top_level);
+    });
+
+    self.socket.on('animation', function(msg){
+        $("#timeLabel").html(new Date());
+        $("#animationRequest").html("open with " + msg.open_animation + "<br>stay open for " + msg.duration + "seconds<br> close with "+ msg.close_animation);
+    });
+
+    $(".stateChangeBtn").click(function(evt){
+        evt.preventDefault();
+        self.socket.emit("state_change", {state:$(this).data("stateVal")});
+    });
+};
+
 

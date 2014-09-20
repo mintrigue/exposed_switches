@@ -7,7 +7,10 @@ var moniker = require('moniker'),
   SessionSockets = require('session.socket.io'),
   io = null,
   sock = null,
-  npm = null
+  npm = null,
+  raspiSock = null,
+  raspiState = null,
+  power = 0 //total power turned on at the moment
 ;
 
 
@@ -49,6 +52,9 @@ exports.landing = function(req, res){
 
   	res.render("landing", {moniker:req.session.handle, openSequences:openSequences});
 }
+
+
+
 
 exports.play = function(req, res){
 	if(openSequences.indexOf(req.params.open_type) < 0)
@@ -129,7 +135,7 @@ exports.initSockets = function(http, sessionStore, cookieParser, sessionStoreKey
 	io = require('socket.io')(http);
 	sock = new SessionSockets(io, sessionStore, cookieParser, sessionStoreKey);
 
-	sock.on('connection', function(err, socket, session){userConnectedHandler(err, sock, socket, session);});
+	sock.of('web').on('connection', function(err, socket, session){userConnectedHandler(err, sock, socket, session);});
 
 	nrp = redis.nrpClient();
 
@@ -165,7 +171,7 @@ exports.initSockets = function(http, sessionStore, cookieParser, sessionStoreKey
 	      							total:total,
   									done:main_count,
   									leaderboard:leaderboard};
-	      		io.emit("general_update", generalData);
+	      		io.of('web').emit("general_update", generalData);
 	      	}
 
 
@@ -175,7 +181,32 @@ exports.initSockets = function(http, sessionStore, cookieParser, sessionStoreKey
 	  	//					done:result});
 	  	});
 	}, 2000);
+
+	exports.initDeviceSockets(io);
 };
+
+
+exports.initDeviceSockets = function(io){
+	io.of("raspi").on('connection', function (socket) {
+    	raspiSock = socket;
+
+    	raspiSock.on("state_change", stateChangeHandler);
+
+		//Send out score update every 100 milliseconds
+		setInterval(function(){
+			raspiSock.volatile.emit("power", {level:power, top_level:total});
+		},100);
+  	});
+
+
+
+  	function stateChangeHandler(msg){
+  		raspiState = msg.state;
+  		console.log("STATE CHANGE:" + raspiState);
+	};
+
+
+}
 
 function userConnectedHandler(err, sessionSock, socket, session){
 	console.log('a user connected');
@@ -231,7 +262,7 @@ function userConnectedHandler(err, sessionSock, socket, session){
 	      		var rankData = {rank:rank,
   									player_count:player_count};
 
-	      		socket.emit("rank_update", rankData);
+	      		socket.volatile.emit("rank_update", rankData);
 	      	}
 	  	});
 	}, 2000);
@@ -261,7 +292,7 @@ function userConnectedHandler(err, sessionSock, socket, session){
 //
 
 function countUpdateHandler(data){
-	io.emit('count', {count:data.count, todo:total-data.count, total:total});
+	io.of('web').emit('count', {count:data.count, todo:total-data.count, total:total});
 };
 
 
@@ -274,7 +305,7 @@ function scoreUser(socket, userHandle, value){
 				redis.client.zincrby("leaderboard", value*-1, userHandle);
 				result = 0;
 			}
-			socket.emit("score", result);
+			socket.volatile.emit("score", result);
 		}
 	});
 }
@@ -474,11 +505,11 @@ function targetReachedHandler(params){
 			}
 
 
-			io.emit("game_over", {leaderboard:data.leaderboard,
+			io.of('web').emit("game_over", {leaderboard:data.leaderboard,
 									winner_opentype:data.winner_opentype,
 									winner_handle:data.winner_handle,
 									winner_score:data.winner_score});
-
+			raspiSock.emit("animation", {open_animation:data.winner_opentype, duration:60*5, close_animation:"RANDOM"});
 			done(null, data);
 		},
 
@@ -498,7 +529,7 @@ function targetReachedHandler(params){
 	                console.log("could not talk with device");
 
 	            if(result != null)
-	            	io.emit("open_spiral", {open_type:data.winner_opentype});
+	            	io.of('web').emit("open_spiral", {open_type:data.winner_opentype});
 
 	            done(null, data);
 	          }
@@ -517,9 +548,9 @@ function targetReachedHandler(params){
 	});
 }
 function sendCountUpdate(count, action){
-  
+
   if(action == "incr" && parseInt(count) >= total)
   	endOfGameReached();
-
+  power = count;
   nrp.emit('count_update', { count:count, action:action});
 };
