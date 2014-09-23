@@ -191,10 +191,37 @@ RaspiPage.prototype.init = function(){
         $("#animationRequest").html("open with " + msg.open_animation + "<br>stay open for " + msg.duration + "seconds<br> close with "+ msg.close_animation);
     });
 
+    $(".piConfigBtn").click(function(evt){
+        evt.preventDefault();
+        var key = $("#key").val();
+        if(key.trim() == null)
+            return alert("key required");
+
+        var open_animations = $("#open").val().split(",");
+        var close_animations = $("#close").val().split(",");
+
+        self.socket.emit("pi_config", {open_animations:open_animations, close_animations:close_animations, key:key});
+    });
+
+
     $(".stateChangeBtn").click(function(evt){
         evt.preventDefault();
-        self.socket.emit("state_change", {state:$(this).data("stateVal")});
+        var key = $("#key").val();
+        if(key.trim() == null)
+            return alert("key required");
+
+        self.socket.emit("state_change", {state:$(this).data("stateVal"), key:key});
     });
+
+    $("#stayOpenBtn").click(function(evt){
+        evt.preventDefault();
+        var key = $("#key").val();
+        if(key.trim() == null)
+            return alert("key required");
+
+        self.socket.emit("requesting_stay_open", {key:key, duration:parseInt($("#openDuration").val()), close_animation:$("#closeAnimation").val()});
+    });
+
 };
 
 

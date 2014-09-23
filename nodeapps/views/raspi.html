@@ -6,11 +6,24 @@
 </head>
 <body>
   <div class="raspi">
+      <h1>Raspi Key</h1>
+      <input id="key">
+
+      <h1>Pi Config</h1>
+      Open <input id="open" placeholder="NINJAS,RA!,MOONWALK"><br>
+      Close <input id="close" placeholder="SHUTDOWN,RAIN"><br>
+      <a class="piConfigBtn" href="#">Send pi_config</a>
+
       <h1>Set State</h1>
       <a data-state-val="OPENING" class="stateChangeBtn" href="#">OPENING</a></br>
       <a data-state-val="OPEN" class="stateChangeBtn" href="#">OPEN</a></br>
       <a data-state-val="CLOSING" class="stateChangeBtn" href="#">CLOSING</a></br>
       <a data-state-val="CLOSED" class="stateChangeBtn" href="#">CLOSED</a></br>
+
+      <h1>ADMIN REQUEST</h1>
+      Stay Open Duration <input id="openDuration" placeholder="60"><br>
+      Stay Open Closing Animation <input id="closeAnimation" placeholder="NINJAS"><br>
+      <a href="#" id="stayOpenBtn">Request "stay_open"</a>
 
       <h1>POWER</h1>
       Current: <span id="currentLevel">0</span></br>

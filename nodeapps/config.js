@@ -37,7 +37,9 @@ nconf.defaults(
 	"session_cookie_prefix" : "UNSET",
 	"session_cookie_domain" : null,
 
-	"target_count": 25
+	"target_count": 25,
+
+	"raspi_key":"ENV_VAR"
 });
 
 nconf.getInt = function(key, _default){

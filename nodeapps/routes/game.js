@@ -5,31 +5,44 @@ var moniker = require('moniker'),
   _ = require("underscore"),
   async = require("async"),
   SessionSockets = require('session.socket.io'),
-  io = null,
-  sock = null,
-  npm = null,
-  raspiSock = null,
-  raspiState = null,
-  power = 0 //total power turned on at the moment
+  io = null, 
+  sock = null, //Web Client sockets
+  npm = null,	//Inter-server sockets
+  raspiSock = null, //Raspi Socket
+  raspiState = null, //Current state of the raspi (OPENING, OPEN, CLOSING, CLOSED)
+  power = 0 //Count of Switches turned on
 ;
 
 
+//Target total of switches that need to open
 var total = config.getInt("target_count", 25);
-var openSequences = ["NINJAS", "RA!", "MOONWALK", "OUCH"];
+
+//Valid Open sequences, stored in redis
+var openSequences = ["RANDOM"];
+var closeSequences = ["RANDOM"];
+
 
 init_game();
 
+//Initializes the gamestate (called at end of this file)
 function init_game(){
 	var d = new Date();
 	redis.client.multi([
-        ["setnx", "game_state", "running-"+d.getTime()]
+        ["setnx", "game_state", "running-"+d.getTime()],
+        ["setnx", "pi_config", JSON.stringify({openSequences:["RANDOM"],closeSequences:["RANDOM"]})],
+        ["get", "pi_config"]
     ]).exec(function (err, results) {
       	if (err){
           	console.error("ERROR init game Redis multi:" + err);
+        } else {
+        	var piConfig = JSON.parse(results[2]);
+        	openSequences = piConfig.openSequences;
+        	closeSequences = piConfig.closeSequences;
         }
     });
 }
 
+//Resets the game to a starting state
 function resetGame(){
 	console.log("RESET GAME");
 	var d = new Date();
@@ -44,6 +57,7 @@ function resetGame(){
         }
     });
 }
+
 
 exports.landing = function(req, res){
 	if(typeof req.session.handle == "undefined"){
@@ -120,11 +134,6 @@ exports.play = function(req, res){
   						leaderboard:leaderboard});
       	}
 
-
-//      	res.render("play", {moniker:req.session.handle,
-  //						chosen_open:req.params.open_type,
-  	//					todo:total-result,
-  	//					done:result});
   	});
 
 };
@@ -142,6 +151,8 @@ exports.initSockets = function(http, sessionStore, cookieParser, sessionStoreKey
 	nrp.on('count_update', countUpdateHandler);
 
 	nrp.on('target_reached', targetReachedHandler);
+
+	nrp.on('pi_config', piConfigUpdateHandler);
 
 	//Update leaderboard
 	setInterval(function(){
@@ -174,11 +185,6 @@ exports.initSockets = function(http, sessionStore, cookieParser, sessionStoreKey
 	      		io.of('web').emit("general_update", generalData);
 	      	}
 
-
-	//      	res.render("play", {moniker:req.session.handle,
-	  //						chosen_open:req.params.open_type,
-	  	//					todo:total-result,
-	  	//					done:result});
 	  	});
 	}, 2000);
 
@@ -192,20 +198,52 @@ exports.initDeviceSockets = function(io){
 
     	raspiSock.on("state_change", stateChangeHandler);
 
+    	raspiSock.on("pi_config", piConfigHandler);
+
+    	//Development Function Only for use with raspi.html
+    	raspiSock.on("requesting_stay_open", piRequestStayOpen);
+
 		//Send out score update every 100 milliseconds
 		setInterval(function(){
 			raspiSock.volatile.emit("power", {level:power, top_level:total});
 		},100);
   	});
 
-
-
   	function stateChangeHandler(msg){
-  		raspiState = msg.state;
-  		console.log("STATE CHANGE:" + raspiState);
+  		if(msg.key == config.get("raspi_key")){
+  			raspiState = msg.state;
+  			console.log("STATE CHANGE:" + raspiState);
+  		}
 	};
 
+	function piConfigHandler(msg){
+		if(msg.key == config.get("raspi_key")
+			&& typeof msg.open_animations != "undefined"
+			&& msg.open_animations.length > 0
+			&& msg.open_animations[0].trim().length > 0
+			&& typeof msg.close_animations != "undefined"
+			&& msg.close_animations.length > 0
+			&& msg.close_animations[0].trim().length > 0){
 
+			nrp.emit("pi_config", msg);
+
+			redis.client.set("pi_config", JSON.stringify({openSequences:msg.open_animations,closeSequences:msg.close_animations}), function(err, result){
+				if (err)
+		          	console.log("could not set pi_config:" + err);
+			});
+  		}
+	};
+
+	function piRequestStayOpen(msg){
+  		if(msg.key == config.get("raspi_key")){
+  			var data = {duration:msg.duration, close_animation:msg.close_animation};
+  			io.of("raspi").emit("stay_open", data);
+  			console.log("SENT stay_open command");
+  			console.dir(data);
+
+
+  		}
+	};
 }
 
 function userConnectedHandler(err, sessionSock, socket, session){
@@ -269,32 +307,15 @@ function userConnectedHandler(err, sessionSock, socket, session){
 };
 
 
-//When target number is hit, set "Game Over Flag"
-//Every Second, worker reads that flag, if set, it sets the "HANDLE FLAG" if not set, w/ expiration
-//	if it set
-//		rename leaderboard
-//		set game state to "over"
-//		get winner
-//		get winner's open_type
-//		record winner name, open_type, score
-//		send message that game is over w/ leaderboard, winner (name, open type, score)
-//		send message to device (if it has not be sent in past x minutes)
-//		reset
-//			clear leaderboard
-//			reset main_count
-//			delete game_over_queue
-//			set game state to "running"
-
-
-//When final number reached value, copy leaderboard
-//Record winner if not expired
-//Send out "game_over" signal
-//
-
 function countUpdateHandler(data){
 	io.of('web').emit('count', {count:data.count, todo:total-data.count, total:total});
 };
 
+
+function piConfigUpdateHandler(data){
+	openSequences = data.open_animations;
+	closeSequences = data.close_animations;
+};
 
 function scoreUser(socket, userHandle, value){
 	redis.client.zincrby("leaderboard", value, userHandle, function(err, result){
@@ -547,6 +568,7 @@ function targetReachedHandler(params){
 			console.log("Error with endofgamereached: " + err);
 	});
 }
+
 function sendCountUpdate(count, action){
 
   if(action == "incr" && parseInt(count) >= total)
